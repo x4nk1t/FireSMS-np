@@ -1,9 +1,10 @@
 package com.firesms.app.domain.rules
 
 /**
- * Builds and explains sender patterns. Indian bank SMS arrive from headers such as `AD-HDFCBK`
- * or `VM-HDFCBK-S`: a two-letter operator/circle prefix that changes between messages, the
- * bank's six-character header, and sometimes a one-letter category suffix.
+ * Builds and explains sender patterns. Bank SMS arrive from short alphanumeric headers such as
+ * `NABIL`; some gateways add a two-letter operator prefix (`AD-NABIL`) or a one-letter category
+ * suffix that changes between messages, so generated patterns allow both. App notifications use
+ * the app's package name (e.g. `com.f1soft.esewa`), which is matched exactly.
  */
 object SenderPatterns {
 

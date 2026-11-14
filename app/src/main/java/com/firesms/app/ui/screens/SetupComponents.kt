@@ -3,11 +3,13 @@ package com.firesms.app.ui.screens
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ActivityNotFoundException
+import android.content.ComponentName
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.PowerManager
 import android.provider.Settings
 import androidx.compose.foundation.layout.*
@@ -32,9 +34,11 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.firesms.app.data.remote.isCleartextUrl
+import com.firesms.app.service.PaymentNotificationListener
 import com.firesms.app.ui.components.FireSmsStatusPill
 import com.firesms.app.ui.components.fireSmsCardBorder
 import com.firesms.app.ui.components.fireSmsCardColors
@@ -307,6 +311,69 @@ internal fun BatteryStatusRow(state: BatteryOptimizationState) {
         } else {
             OutlinedButton(onClick = { requestUnrestrictedBattery(context, alreadyUnrestricted = false) }) {
                 Text("Allow unrestricted battery use")
+            }
+        }
+    }
+}
+
+// ─── Payment app notifications ─────────────────────────────────
+
+@Stable
+internal class NotificationAccessState(private val context: Context) {
+    /** True when Android lets FireSMS read other apps' notifications, e.g. eSewa and Khalti. */
+    var granted by mutableStateOf(check())
+        private set
+
+    fun refresh() {
+        granted = check()
+    }
+
+    private fun check(): Boolean =
+        context.packageName in NotificationManagerCompat.getEnabledListenerPackages(context)
+}
+
+@Composable
+internal fun rememberNotificationAccessState(): NotificationAccessState {
+    val context = LocalContext.current
+    val state = remember(context) { NotificationAccessState(context) }
+    LifecycleResumeEffect(state) {
+        state.refresh()
+        onPauseOrDispose { }
+    }
+    return state
+}
+
+/** Opens FireSMS's own notification access switch where supported, else the full list. */
+internal fun openNotificationAccessSettings(context: Context) {
+    val list = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        val detail = Intent(Settings.ACTION_NOTIFICATION_LISTENER_DETAIL_SETTINGS).putExtra(
+            Settings.EXTRA_NOTIFICATION_LISTENER_COMPONENT_NAME,
+            ComponentName(context, PaymentNotificationListener::class.java).flattenToString()
+        )
+        context.startFirst(detail, list)
+    } else {
+        context.startFirst(list)
+    }
+}
+
+@Composable
+internal fun NotificationAccessStatusRow(state: NotificationAccessState) {
+    val context = LocalContext.current
+    SetupStatusRow(
+        title = "eSewa & Khalti notifications",
+        description = "Lets FireSMS read payment notifications from wallet apps. Only apps named by an " +
+            "enabled rule are read; other notifications are ignored and never stored.",
+        statusLabel = if (state.granted) "Allowed" else "Off",
+        statusColor = if (state.granted) FireSmsTheme.colors.success else FireSmsTheme.colors.warning
+    ) {
+        if (state.granted) {
+            TextButton(onClick = { openNotificationAccessSettings(context) }) {
+                Text("Notification access settings")
+            }
+        } else {
+            OutlinedButton(onClick = { openNotificationAccessSettings(context) }) {
+                Text("Allow notification access")
             }
         }
     }

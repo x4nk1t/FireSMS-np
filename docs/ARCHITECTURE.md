@@ -148,7 +148,7 @@ Retries use exponential backoff and update the related SMS log.
 ## App updates
 
 `GitHubReleaseClient` uses a separate unauthenticated Ktor client to query the public
-`PepeByte/FireSMS` `/releases/latest` API over HTTPS. It rejects drafts/prereleases, compares stable
+`x4nk1t/FireSMS-np` `/releases/latest` API over HTTPS. It rejects drafts/prereleases, compares stable
 numeric versions (not lexicographic strings), never offers downgrades, and derives trusted release
 page URLs from validated tags. It never receives Firefly credentials. Missing releases are handled
 as no update; rate limits, transport failures, and malformed responses are errors.

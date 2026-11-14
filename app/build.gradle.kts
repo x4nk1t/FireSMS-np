@@ -54,13 +54,6 @@ android {
         compose = true
         buildConfig = true
     }
-
-    sourceSets {
-        getByName("main") {
-            // Package the canonical AI rule-generator instructions without maintaining a duplicate.
-            assets.srcDir(rootProject.file(".agents/skills/firesms-regex-rule-generator"))
-        }
-    }
 }
 
 dependencies {

@@ -15,7 +15,7 @@ class GitHubReleaseClientTest {
     fun `returns newer stable release with a trusted derived page url`() {
         val release = assertNotNull(decodeLatestReleaseResponse(200, payload(), "1.9.0"))
         assertEquals("1.10.0", release.version)
-        assertEquals("https://github.com/PepeByte/FireSMS/releases/tag/v1.10.0", release.pageUrl)
+        assertEquals("https://github.com/x4nk1t/FireSMS-np/releases/tag/v1.10.0", release.pageUrl)
     }
 
     @Test
@@ -28,7 +28,7 @@ class GitHubReleaseClientTest {
     @Test
     fun `supports unprefixed tags`() {
         assertEquals(
-            AppRelease("2.0.0", "https://github.com/PepeByte/FireSMS/releases/tag/2.0.0"),
+            AppRelease("2.0.0", "https://github.com/x4nk1t/FireSMS-np/releases/tag/2.0.0"),
             decodeLatestReleaseResponse(200, payload("2.0.0"), "1.0.0")
         )
     }

@@ -24,6 +24,10 @@ interface ParserRuleDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(rules: List<ParserRule>)
 
+    /** Inserts only rules whose id is not taken, so the user's edits to a rule are kept. */
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertMissing(rules: List<ParserRule>)
+
     @Update
     suspend fun update(rule: ParserRule)
 

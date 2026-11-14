@@ -1,6 +1,12 @@
-# FireSMS
+# FireSMS Nepal
 
-FireSMS is an open-source Android app that turns matching bank SMS messages into transactions in your self-hosted [Firefly III](https://www.firefly-iii.org/) instance.
+FireSMS Nepal is a fork of [FireSMS](https://github.com/PepeByte/FireSMS) tailored to Nepal. It turns Nepali bank SMS alerts and eSewa/Khalti payment notifications into transactions in your self-hosted [Firefly III](https://www.firefly-iii.org/) instance.
+
+What this fork adds:
+
+- **Default rules for Nepal:** bank SMS debit/credit alerts (NPR, Rs, रु) and eSewa/Khalti money received and payments. They're added switched off; set your Firefly account, test them with a real message, and switch them on under **Automation**. Removed ones can be added back from the same screen.
+- **eSewa and Khalti notifications:** with notification access granted (**Settings → Permissions**), wallet app notifications go through the same rules as SMS. The sender is the app's package name: `com.f1soft.esewa` for eSewa, `com.khalti` for Khalti.
+- **Updates from this fork:** the update checker uses this repository's releases.
 
 It runs on-device, watches only SMS senders that match your configured parser rules, extracts transaction data with regular expressions, and sends the resulting transaction to Firefly III using your personal access token.
 
@@ -9,6 +15,7 @@ It runs on-device, watches only SMS senders that match your configured parser ru
 ## Features
 
 - Receive and process matching SMS messages on Android.
+- Read eSewa/Khalti (or any other app's) payment notifications when notification access is granted.
 - Create Firefly III transactions automatically.
 - Configure parser rules with Kotlin/Java-compatible regular expressions.
 - Import AI-generated parser-rule JSON after review.

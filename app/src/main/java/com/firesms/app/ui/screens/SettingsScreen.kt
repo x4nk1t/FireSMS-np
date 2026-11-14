@@ -92,6 +92,7 @@ fun SettingsScreen(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) Manifest.permission.POST_NOTIFICATIONS else null
     )
     val battery = rememberBatteryOptimizationState()
+    val notificationAccess = rememberNotificationAccessState()
 
     val smsPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -195,7 +196,7 @@ fun SettingsScreen(
                 SetupCard {
                     PermissionStatusRow(
                         title = "SMS access",
-                        description = "Required to recognise bank messages.",
+                        description = "Required to recognise bank SMS alerts.",
                         permission = smsPermission,
                         required = true,
                         onRequest = { smsPermissionLauncher.launch(Manifest.permission.RECEIVE_SMS) }
@@ -209,6 +210,7 @@ fun SettingsScreen(
                             { notificationPermissionLauncher.launch(permission) }
                         }
                     )
+                    NotificationAccessStatusRow(notificationAccess)
                     BatteryStatusRow(battery)
                 }
             }

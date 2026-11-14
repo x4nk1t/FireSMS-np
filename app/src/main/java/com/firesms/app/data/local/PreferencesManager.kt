@@ -49,6 +49,7 @@ class PreferencesManager(private val context: Context) {
         private val HISTORY_RETENTION = stringPreferencesKey("history_retention")
         private val DYNAMIC_COLOR = booleanPreferencesKey("dynamic_color")
         private val URL_SCHEME_MIGRATED = booleanPreferencesKey("url_scheme_migrated")
+        private val NEPAL_DEFAULT_RULES_ADDED = booleanPreferencesKey("nepal_default_rules_added")
 
         /** Runs once before the first read; see [migrateLegacyFireflyUrl]. */
         internal object LegacyUrlSchemeMigration : DataMigration<Preferences> {
@@ -71,6 +72,16 @@ class PreferencesManager(private val context: Context) {
 
     suspend fun setDynamicColor(enabled: Boolean) {
         context.dataStore.edit { it[DYNAMIC_COLOR] = enabled }
+    }
+
+    /** Nepal default rules are added once per install; deleting them afterwards keeps them deleted. */
+    suspend fun markNepalDefaultRulesAdded(): Boolean {
+        var firstTime = false
+        context.dataStore.edit {
+            firstTime = it[NEPAL_DEFAULT_RULES_ADDED] != true
+            it[NEPAL_DEFAULT_RULES_ADDED] = true
+        }
+        return firstTime
     }
 
     val fireflyUrl: Flow<String> = context.dataStore.data.map { it[FIREFLY_URL] ?: "" }

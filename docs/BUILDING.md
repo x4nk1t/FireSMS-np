@@ -18,7 +18,7 @@ The project uses the Gradle 8.14.4 wrapper with Android Gradle Plugin 8.13.2, so
 ## Clone the project
 
 ```bash
-git clone git@github.com:PepeByte/FireSMS.git
+git clone git@github.com:x4nk1t/FireSMS-np.git
 cd FireSMS
 ```
 

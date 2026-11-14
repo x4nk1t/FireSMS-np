@@ -526,7 +526,7 @@ class RuleEditViewModel(application: Application) : AndroidViewModel(application
     private fun validate(state: RuleEditState): RuleFieldProblem? {
         if (state.name.isBlank()) return RuleFieldProblem(RuleField.NAME, "Add a name for this rule.")
         if (state.senderPattern.isBlank()) {
-            return RuleFieldProblem(RuleField.SENDER_PATTERN, "Add a sender pattern, e.g. HDFCBK.")
+            return RuleFieldProblem(RuleField.SENDER_PATTERN, "Add a sender pattern, e.g. NABIL, or com.f1soft.esewa for eSewa notifications.")
         }
         RuleValidator.patternProblem(state.senderPattern)?.let {
             return RuleFieldProblem(RuleField.SENDER_PATTERN, "Sender pattern isn't a valid pattern: $it")

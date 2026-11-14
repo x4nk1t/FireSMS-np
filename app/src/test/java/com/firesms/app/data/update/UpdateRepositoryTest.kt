@@ -12,7 +12,7 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
 
 class UpdateRepositoryTest {
-    private val release = AppRelease("1.1.0", "https://github.com/PepeByte/FireSMS/releases/tag/v1.1.0")
+    private val release = AppRelease("1.1.0", "https://github.com/x4nk1t/FireSMS-np/releases/tag/v1.1.0")
 
     private class MemoryStore(initial: UpdateSnapshot = UpdateSnapshot()) : UpdateStore {
         override val state = MutableStateFlow(initial)
@@ -60,7 +60,7 @@ class UpdateRepositoryTest {
         repository.checkForUpdates { false }
         assertNull(store.state.value.lastNotifiedVersion)
         repository.checkForUpdates { notifications++; true }
-        latest = AppRelease("1.2.0", "https://github.com/PepeByte/FireSMS/releases/tag/v1.2.0")
+        latest = AppRelease("1.2.0", "https://github.com/x4nk1t/FireSMS-np/releases/tag/v1.2.0")
         repository.checkForUpdates { notifications++; true }
         assertEquals(2, notifications)
         assertEquals("1.2.0", store.state.value.lastNotifiedVersion)
@@ -156,7 +156,7 @@ class UpdateRepositoryTest {
     @Test
     fun `ignoring a release does not hide or silence a newer release`() = runBlocking {
         val store = MemoryStore(UpdateSnapshot(release))
-        val newer = AppRelease("1.2.0", "https://github.com/PepeByte/FireSMS/releases/tag/v1.2.0")
+        val newer = AppRelease("1.2.0", "https://github.com/x4nk1t/FireSMS-np/releases/tag/v1.2.0")
         val repository = UpdateRepository(store, "1.0.2", { newer })
         repository.ignoreUpdate(release.version)
         var notifications = 0
@@ -189,7 +189,7 @@ class UpdateRepositoryTest {
     @Test
     fun `stale ignore waits for check and cannot cancel a newer release notification`() = runBlocking {
         val store = MemoryStore(UpdateSnapshot(release))
-        val newer = AppRelease("1.2.0", "https://github.com/PepeByte/FireSMS/releases/tag/v1.2.0")
+        val newer = AppRelease("1.2.0", "https://github.com/x4nk1t/FireSMS-np/releases/tag/v1.2.0")
         val started = CompletableDeferred<Unit>()
         val finish = CompletableDeferred<Unit>()
         var dismissed = 0

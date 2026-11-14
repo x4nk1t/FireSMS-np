@@ -8,6 +8,7 @@ Depending on your configuration and Android permissions, FireSMS may access or s
 
 - SMS sender names/numbers for messages received on the device,
 - SMS bodies for messages that match configured sender rules or need attention,
+- the title and text of app notifications (for example eSewa and Khalti), if you grant notification access,
 - parsed transaction details,
 - Firefly III server URL,
 - Firefly III personal access token,
@@ -20,6 +21,11 @@ Depending on your configuration and Android permissions, FireSMS may access or s
 Parser rules, local history, retry queue entries, preferences, and backups are managed by the app on your device unless you explicitly export or share them.
 
 FireSMS ignores SMS senders that do not match any enabled sender parser rule.
+
+Notification access is optional and off until you turn it on in Android settings. With it, Android
+shows FireSMS every notification on the device, but FireSMS only reads notifications from apps whose
+package name matches an enabled parser rule (for example `com.f1soft.esewa`) and that mention an
+amount. Every other notification is ignored and never stored.
 
 ## What is sent to Firefly III
 
@@ -49,7 +55,7 @@ network you trust, such as a LAN or a private VPN/tailnet.
 
 ## Update checks
 
-FireSMS automatically checks the public `PepeByte/FireSMS` GitHub releases API for a newer stable
+FireSMS automatically checks the public `x4nk1t/FireSMS-np` GitHub releases API for a newer stable
 version approximately once a day when connected. You can also check manually in Settings.
 These unauthenticated HTTPS requests send no SMS messages, transaction data, Firefly server address,
 or access token. GitHub receives normal connection metadata, such as your IP address and the

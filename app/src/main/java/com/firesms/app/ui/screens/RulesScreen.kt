@@ -49,6 +49,7 @@ fun RulesScreen(
     titleMappingsViewModel: TitleMappingsViewModel = viewModel()
 ) {
     val rules by viewModel.rules.collectAsStateWithLifecycle()
+    val defaultRulesMissing by viewModel.defaultRulesMissing.collectAsStateWithLifecycle()
     val mappings by titleMappingsViewModel.mappings.collectAsStateWithLifecycle()
     val saveResult by titleMappingsViewModel.saveResult.collectAsStateWithLifecycle()
     val suggestions by titleMappingsViewModel.suggestions.collectAsStateWithLifecycle()
@@ -134,6 +135,11 @@ fun RulesScreen(
                                 onClick = { onNavigateToEdit(rule.id) },
                                 onDelete = { pendingRuleDelete = rule }
                             )
+                        }
+                        if (defaultRulesMissing) {
+                            item(key = "rules-defaults") {
+                                DefaultRulesPrompt(onAdd = viewModel::addMissingDefaultRules)
+                            }
                         }
                         if (rules.isEmpty()) {
                             item(key = "rules-empty") {
@@ -224,6 +230,22 @@ fun RulesScreen(
                 showMappingEditor = false
             }
         )
+    }
+}
+
+@Composable
+private fun DefaultRulesPrompt(onAdd: () -> Unit) {
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        ListExplanation(
+            "Starter rules for Nepali bank SMS and eSewa/Khalti notifications. They're added switched " +
+                "off; set your account, test with a real message, then switch them on."
+        )
+        OutlinedButton(onClick = onAdd) {
+            Text("Add Nepal default rules")
+        }
     }
 }
 

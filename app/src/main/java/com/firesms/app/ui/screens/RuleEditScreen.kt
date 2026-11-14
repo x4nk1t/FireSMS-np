@@ -378,7 +378,7 @@ private fun SampleMessageSection(
             value = sender,
             onValueChange = onSenderChange,
             label = { Text("Sender") },
-            placeholder = { Text("e.g. AD-HDFCBK") },
+            placeholder = { Text("e.g. NABIL or com.f1soft.esewa") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
@@ -439,13 +439,13 @@ private fun RuleMatchSection(
         )
         val senderHelp = remember(senderPattern) {
             SenderPatterns.explain(senderPattern)
-                ?: "A pattern found in the sender, e.g. HDFCBK also matches AD-HDFCBK and VM-HDFCBK"
+                ?: "A pattern found in the sender, e.g. NABIL also matches NABIL_ALERT. For eSewa or Khalti notifications, use the app's package name, e.g. com.f1soft.esewa"
         }
         RuleTextField(
             value = senderPattern,
             onValueChange = onSenderPatternChange,
             label = "Sender pattern",
-            placeholder = "e.g. HDFCBK",
+            placeholder = "e.g. NABIL",
             supporting = senderHelp,
             error = senderError,
             monospace = true,
@@ -455,7 +455,7 @@ private fun RuleMatchSection(
             value = bodyPattern,
             onValueChange = onBodyPatternChange,
             label = "Body pattern",
-            placeholder = "e.g. debited by Rs\\.(?<amount>[\\d,.]+) at (?<merchant>.+?)\\.",
+            placeholder = "e.g. debited by NPR (?<amount>[\\d,.]+)\\. Remarks: (?<remarks>.+?)\\.",
             supporting = "Capture each value with a named group, e.g. ${RuleValidator.NAMED_GROUP_EXAMPLE}",
             error = bodyError,
             singleLine = false,

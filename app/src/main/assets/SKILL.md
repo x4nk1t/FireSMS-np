@@ -7,6 +7,8 @@ description: Generate copy/paste-ready FireSMS parser-rule JSON from a user's tr
 
 Convert a user-provided transaction SMS body into a JSON object that can be pasted into FireSMS using **Load rule JSON**.
 
+This build of FireSMS is tailored to Nepal. Messages are usually bank SMS alerts or eSewa/Khalti app notifications, and amounts are written as `NPR 1,234.50`, `Rs. 1,234.50`, `Rs 1234` or `रु 1,234`. App notifications reach the parser as the notification title and text joined by a newline, so a body pattern for a notification must allow for that line break.
+
 ## Interaction workflow
 
 1. Ask the user to paste the complete SMS body if they have not provided it.
@@ -225,14 +227,14 @@ Before returning the JSON:
 Input SMS:
 
 ```text
-Your account ##1234 was debited by USD 24.50 on 2026-04-19 16:30:47 by:Example Store:CARD:ABC123456
+Your account ##1234 was debited by NPR 2,450.00 on 2026-04-19 16:30:47 by:Example Store:CARD:ABC123456
 ```
 
 Final output:
 
 ```json
 {
-  "bodyPattern": "Your\u005Cs+account\u005Cs+(?<account>#+[0-9]+)\u005Cs+was\u005Cs+debited\u005Cs+by\u005Cs+USD\u005Cs+(?<amount>[0-9,]+(?:[.][0-9]{1,2})?)\u005Cs+on\u005Cs+(?<date>[0-9]{4}-[0-9]{2}-[0-9]{2}\u005Cs+[0-9]{2}:[0-9]{2}:[0-9]{2})\u005Cs+by:(?<merchant>[^:]+):(?<method>[^:]+):(?<ref>[A-Za-z0-9]+)",
+  "bodyPattern": "Your\u005Cs+account\u005Cs+(?<account>#+[0-9]+)\u005Cs+was\u005Cs+debited\u005Cs+by\u005Cs+NPR\u005Cs+(?<amount>[0-9,]+(?:[.][0-9]{1,2})?)\u005Cs+on\u005Cs+(?<date>[0-9]{4}-[0-9]{2}-[0-9]{2}\u005Cs+[0-9]{2}:[0-9]{2}:[0-9]{2})\u005Cs+by:(?<merchant>[^:]+):(?<method>[^:]+):(?<ref>[A-Za-z0-9]+)",
   "amountTemplate": "{{amount}}",
   "descriptionSource": "template",
   "descriptionValue": "{{merchant}} {{method}}",

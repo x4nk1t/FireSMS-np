@@ -5,6 +5,7 @@ import com.firesms.app.data.local.AppDatabase
 import com.firesms.app.data.local.PreferencesManager
 import com.firesms.app.data.update.AppUpdateStore
 import com.firesms.app.data.update.UpdateRepository
+import com.firesms.app.domain.rules.NepalDefaultRules
 import com.firesms.app.service.createNotificationChannels
 import com.firesms.app.service.createUpdateNotificationChannel
 import com.firesms.app.service.dismissUpdateNotification
@@ -39,5 +40,10 @@ class FireSmsApp : Application() {
         scheduleAppUpdateChecks(this)
         applicationScope.launch { configureHistoryCleanup(this@FireSmsApp) }
         applicationScope.launch { updateRepository.dismissObsoleteNotification() }
+        applicationScope.launch {
+            if (preferencesManager.markNepalDefaultRulesAdded()) {
+                database.parserRuleDao().insertMissing(NepalDefaultRules.rules)
+            }
+        }
     }
 }

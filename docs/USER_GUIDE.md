@@ -64,6 +64,44 @@ A rule needs:
 
 See [PARSER_RULES.md](PARSER_RULES.md) for examples.
 
+## Nepal default rules
+
+FireSMS Nepal ships starter rules under **Automation**:
+
+| Rule | Reads | Type |
+|---|---|---|
+| Bank SMS debit | SMS from common Nepali bank senders (NABIL, NICASIA, GIBL, NMB, …) containing *debited/withdrawn* | Withdrawal |
+| Bank SMS credit | The same senders, containing *credited/deposited* | Deposit |
+| eSewa received / eSewa payment | eSewa app notifications | Deposit / Withdrawal |
+| Khalti received / Khalti payment | Khalti app notifications | Deposit / Withdrawal |
+
+They look for keywords and the first `NPR`/`Rs`/`रु` amount rather than one exact sentence, and skip
+OTP, failed and reversed messages. Bank rules use the text after *Remarks:* as the description; wallet
+rules use the name after *from* or *to*.
+
+They are added switched off. For each one you use:
+
+1. Open it and, under **Accounts**, set *Paid from* or *Received into (your account)* to the Firefly
+   asset account it belongs to (the wallet rules
+   suggest `eSewa` and `Khalti`; create those accounts in Firefly or pick your own).
+2. Narrow the bank sender pattern to your bank if you like, e.g. `(?i)NABIL`.
+3. Paste a real message into **Sample message** to check it, then switch the rule on.
+
+If you delete a default rule, **Add Nepal default rules** on the Automation screen adds back the
+missing ones without touching the rules you kept.
+
+## eSewa and Khalti notifications
+
+eSewa and Khalti mostly confirm payments with app notifications rather than SMS. To use them:
+
+1. Go to **Settings → Permissions → eSewa & Khalti notifications** and allow notification access.
+2. Switch on the eSewa or Khalti default rules (or write your own).
+
+A notification is read as its title and text joined by a new line, and the sender is the app's
+package name: `com.f1soft.esewa` for eSewa and `com.khalti` for Khalti. Any other app works the same
+way: create a rule whose sender pattern is that app's package name, such as a mobile banking app.
+Only notifications from apps named by an enabled rule, and that mention an amount, are read.
+
 ## Using AI rule import
 
 The rule editor can copy AI generator instructions. You can paste those instructions and a sanitized SMS example into an AI tool, then paste the generated JSON back into FireSMS.
@@ -134,7 +172,7 @@ FireSMS can automatically delete old local activity. This only affects FireSMS l
 
 ## App updates
 
-FireSMS checks the [GitHub releases](https://github.com/PepeByte/FireSMS/releases) for a newer stable
+FireSMS checks the [GitHub releases](https://github.com/x4nk1t/FireSMS-np/releases) for a newer stable
 version approximately once a day when connected. Pre-releases and drafts are ignored. Android may
 delay checks because of battery or network restrictions.
 

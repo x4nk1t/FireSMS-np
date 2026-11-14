@@ -8,9 +8,7 @@ import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.firesms.app.MainActivity
-import com.firesms.app.data.local.AppDatabase
 import com.firesms.app.data.local.DataMaintenanceLock
-import com.firesms.app.data.local.decodeTransactionSnapshot
 import kotlinx.coroutines.*
 
 class SmsProcessingService : Service() {
@@ -24,12 +22,10 @@ class SmsProcessingService : Service() {
     }
 
     private val serviceScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-    private lateinit var db: AppDatabase
     private lateinit var processor: SmsTransactionProcessor
 
     override fun onCreate() {
         super.onCreate()
-        db = AppDatabase.getInstance(this)
         processor = SmsTransactionProcessor(applicationContext)
     }
 
@@ -92,31 +88,8 @@ class SmsProcessingService : Service() {
                 Log.d(TAG, "Duplicate SMS detected, skipping")
             is SmsTransactionProcessor.IngestResult.Processed -> {
                 Log.d(TAG, "Processed SMS from $sender: ${result.outcome}")
-                notifyIfNeedsAttention(result)
+                notifyIfNeedsAttention(this@SmsProcessingService, result)
             }
-        }
-    }
-
-    /** Messages the user has to act on get their own notification; queued ones retry silently. */
-    private suspend fun notifyIfNeedsAttention(result: SmsTransactionProcessor.IngestResult.Processed) {
-        when (val outcome = result.outcome) {
-            SmsTransactionProcessor.Outcome.Unparsed -> {
-                val log = db.smsLogDao().getById(result.smsLogId) ?: return
-                showUnparsedSmsNotification(this, log.id, log.sender)
-            }
-            SmsTransactionProcessor.Outcome.NotConfigured ->
-                showSyncFailedNotification(this, result.smsLogId, null, "Firefly isn't set up yet")
-            is SmsTransactionProcessor.Outcome.Failed -> {
-                val log = db.smsLogDao().getById(result.smsLogId)
-                showSyncFailedNotification(
-                    this,
-                    result.smsLogId,
-                    log?.let { decodeTransactionSnapshot(it.transactionSnapshotJson)?.displayDescription() ?: it.sender },
-                    outcome.message
-                )
-            }
-            is SmsTransactionProcessor.Outcome.Created,
-            is SmsTransactionProcessor.Outcome.Queued -> Unit
         }
     }
 

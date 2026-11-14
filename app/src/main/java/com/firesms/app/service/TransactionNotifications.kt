@@ -7,7 +7,9 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.firesms.app.MainActivity
+import com.firesms.app.data.local.AppDatabase
 import com.firesms.app.data.local.StoredTransactionSnapshot
+import com.firesms.app.data.local.decodeTransactionSnapshot
 import com.firesms.app.ui.components.formatDisplayAmount
 import java.math.BigDecimal
 
@@ -84,6 +86,33 @@ fun showTransactionCreatedNotification(context: Context, smsLogId: Long, snapsho
     manager.notify(SUCCESS_TAG, smsLogId.toInt(), notification)
     postSummary(context, manager, SUCCESS_GROUP, SUCCESS_CHANNEL_ID, SUCCESS_SUMMARY_ID, smsLogId) { count ->
         "$count ${if (count == 1) "transaction" else "transactions"} added to Firefly"
+    }
+}
+
+/**
+ * Messages the user has to act on get their own notification; created ones were already announced
+ * and queued ones retry silently. Shared by incoming SMS and app notifications.
+ */
+suspend fun notifyIfNeedsAttention(context: Context, result: SmsTransactionProcessor.IngestResult.Processed) {
+    val smsLogDao = AppDatabase.getInstance(context).smsLogDao()
+    when (val outcome = result.outcome) {
+        SmsTransactionProcessor.Outcome.Unparsed -> {
+            val log = smsLogDao.getById(result.smsLogId) ?: return
+            showUnparsedSmsNotification(context, log.id, log.sender)
+        }
+        SmsTransactionProcessor.Outcome.NotConfigured ->
+            showSyncFailedNotification(context, result.smsLogId, null, "Firefly isn't set up yet")
+        is SmsTransactionProcessor.Outcome.Failed -> {
+            val log = smsLogDao.getById(result.smsLogId)
+            showSyncFailedNotification(
+                context,
+                result.smsLogId,
+                log?.let { decodeTransactionSnapshot(it.transactionSnapshotJson)?.displayDescription() ?: it.sender },
+                outcome.message
+            )
+        }
+        is SmsTransactionProcessor.Outcome.Created,
+        is SmsTransactionProcessor.Outcome.Queued -> Unit
     }
 }
 

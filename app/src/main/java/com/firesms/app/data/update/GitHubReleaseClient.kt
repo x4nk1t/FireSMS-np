@@ -38,7 +38,7 @@ class GitHubReleaseClient {
 
     companion object {
         private const val LATEST_RELEASE_URL =
-            "https://api.github.com/repos/PepeByte/FireSMS/releases/latest"
+            "https://api.github.com/repos/x4nk1t/FireSMS-np/releases/latest"
 
         // Deliberately separate from FireflyApi: never sends the user's Firefly token to GitHub.
         private val client by lazy {
@@ -90,6 +90,6 @@ internal fun decodeLatestReleaseResponse(
     // Do not trust html_url from a remote payload to choose where to send the user.
     return AppRelease(
         version = release.tag.removePrefix("v"),
-        pageUrl = "https://github.com/PepeByte/FireSMS/releases/tag/${release.tag}"
+        pageUrl = "https://github.com/x4nk1t/FireSMS-np/releases/tag/${release.tag}"
     )
 }
