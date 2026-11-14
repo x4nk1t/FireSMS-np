@@ -4,6 +4,23 @@ All notable changes to FireSMS will be documented in this file.
 
 ## Unreleased
 
+## 1.2.0 — 2026-11-15
+
+First release of FireSMS Nepal, based on FireSMS 1.1.0.
+
+### Nepal
+- New app ID `com.firesms.np` and name **FireSMS Nepal**, so it installs alongside FireSMS. It is a separate app: move data across with backup and restore.
+- Default parser rules for Nepali bank SMS (debit and credit, NPR/Rs/रु) and for eSewa and Khalti money received and payments. They're added switched off; set your account, test with a real message, then switch them on.
+- **Add Nepal default rules** on the Automation screen adds back any default rule you deleted, without touching the ones you kept.
+- Rule editor examples now use Nepali senders and NPR amounts.
+
+### App notifications
+- FireSMS can read eSewa and Khalti payment notifications (or any other app's) when notification access is allowed under **Settings → Permissions**. A notification is parsed like an SMS, with the app's package name as the sender, and is sent to Firefly III the same way.
+- Only notifications that mention an amount, from apps named by an enabled rule, are read; everything else is ignored and never stored.
+
+### Updates
+- Update checks now use FireSMS Nepal's own GitHub releases.
+
 ## 1.1.0 — 2026-11-10
 
 ### Activity
