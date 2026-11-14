@@ -12,7 +12,9 @@ android {
     ndkVersion = "27.0.12077973"
 
     defaultConfig {
-        applicationId = "com.firesms.app"
+        // Kotlin packages stay com.firesms.app (namespace) to match upstream FireSMS; only the
+        // installed app ID differs, so FireSMS Nepal installs alongside FireSMS.
+        applicationId = "com.firesms.np"
         minSdk = 26
         targetSdk = 35
         versionCode = 6
@@ -21,7 +23,7 @@ android {
 
     buildTypes {
         debug {
-            // Installs next to the release app as com.firesms.app.debug, labelled and grey-iconed as debug
+            // Installs next to the release app as com.firesms.np.debug, labelled and grey-iconed as debug
             // (see src/debug/res). "+debug" is build metadata, so update checks still parse the version.
             applicationIdSuffix = ".debug"
             versionNameSuffix = "+debug"
